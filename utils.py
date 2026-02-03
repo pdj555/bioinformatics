@@ -1,5 +1,15 @@
 """Shared utilities for bioinformatics notebooks."""
 
+__all__ = [
+    "label_bioactivity_class",
+    "lipinski",
+    "norm_value",
+    "pIC50_from_norm",
+    "mannwhitney",
+    "remove_low_variance_features",
+    "plot_regression_fit",
+]
+
 import numpy as np
 import pandas as pd
 
