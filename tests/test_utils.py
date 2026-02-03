@@ -274,6 +274,27 @@ class TestMannwhitney:
 
         assert "Same distribution" in result["Interpretation"].iloc[0]
 
+    def test_interpretation_nan_pvalue_insufficient_data(self, tmp_path):
+        """Should interpret NaN p-value (from insufficient data) as invalid test.
+
+        Bug fix for GitHub issue #28: When one class group has no samples,
+        mannwhitneyu returns NaN for p-value. NaN > alpha is False, so the
+        code incorrectly reported 'Different distribution (reject H0)'.
+        """
+        from utils import mannwhitney
+
+        # No inactive samples - this causes mannwhitneyu to return NaN p-value
+        df = pd.DataFrame({
+            "value": [9.0, 8.5, 8.0],
+            "class": ["active", "active", "active"],
+        })
+        output_file = tmp_path / "mannwhitneyu_value.csv"
+        result = mannwhitney("value", df, filename=str(output_file))
+
+        # Should NOT claim significance when test couldn't be performed
+        assert "Insufficient data" in result["Interpretation"].iloc[0]
+        assert "Different distribution" not in result["Interpretation"].iloc[0]
+
 
 class TestRemoveLowVarianceFeatures:
     """Tests for remove_low_variance_features function."""
