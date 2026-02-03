@@ -210,6 +210,30 @@ class TestLipinski:
         assert len(result) == 0
         assert list(result.columns) == ["MW", "LogP", "NumHDonors", "NumHAcceptors"]
 
+    def test_rejects_string_input_with_typeerror(self):
+        """Should raise TypeError when given a string instead of a list.
+
+        Bug fix for GitHub issue #30: Passing a string like 'CCO' instead of
+        ['CCO'] caused lipinski() to iterate character-by-character, producing
+        incorrect results (3 rows for 'C', 'C', 'O') instead of raising an error.
+        """
+        from utils import lipinski
+
+        with pytest.raises(TypeError) as excinfo:
+            lipinski("CCO")
+
+        assert "list of SMILES strings" in str(excinfo.value)
+        assert "lipinski(['CCO'])" in str(excinfo.value)
+
+    def test_rejects_string_input_includes_sample_in_error(self):
+        """Error message should include a sample of the input string."""
+        from utils import lipinski
+
+        with pytest.raises(TypeError) as excinfo:
+            lipinski("CCO")
+
+        assert "CCO" in str(excinfo.value)
+
 
 class TestMannwhitney:
     """Tests for mannwhitney function."""
