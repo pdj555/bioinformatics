@@ -72,11 +72,12 @@ def mannwhitney(descriptor, df, alpha=0.05, filename=None):
     active = sel[sel["class"] == "active"][descriptor]
     inactive = sel[sel["class"] == "inactive"][descriptor]
     stat, p = mannwhitneyu(active, inactive)
-    interpretation = (
-        "Same distribution (fail to reject H0)"
-        if p > alpha
-        else "Different distribution (reject H0)"
-    )
+    if np.isnan(p):
+        interpretation = "Insufficient data (test invalid)"
+    elif p > alpha:
+        interpretation = "Same distribution (fail to reject H0)"
+    else:
+        interpretation = "Different distribution (reject H0)"
     results = pd.DataFrame({
         "Descriptor": [descriptor],
         "Statistics": [stat],
