@@ -30,6 +30,12 @@ def label_bioactivity_class(standard_values, active_nM=1000, inactive_nM=10000):
 
 def lipinski(smiles, verbose=False):
     """Compute Lipinski descriptors (MW, LogP, NumHDonors, NumHAcceptors) from SMILES."""
+    if isinstance(smiles, str):
+        raise TypeError(
+            "lipinski() requires a list of SMILES strings, not a single string. "
+            f"Got string '{smiles[:50]}{'...' if len(smiles) > 50 else ''}'. "
+            "Use lipinski(['CCO']) instead of lipinski('CCO')."
+        )
     from rdkit import Chem
     from rdkit.Chem import Descriptors, Lipinski
 
