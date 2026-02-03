@@ -34,23 +34,19 @@ def lipinski(smiles, verbose=False):
     from rdkit.Chem import Descriptors, Lipinski
 
     moldata = [Chem.MolFromSmiles(s) for s in smiles]
-    baseData = None
-    for i, mol in enumerate(moldata):
+    rows = []
+    for mol in moldata:
         if mol is None:
             continue
-        row = np.array([
+        rows.append([
             Descriptors.MolWt(mol),
             Descriptors.MolLogP(mol),
             Lipinski.NumHDonors(mol),
             Lipinski.NumHAcceptors(mol),
         ])
-        if baseData is None:
-            baseData = row
-        else:
-            baseData = np.vstack([baseData, row])
-    if baseData is None:
+    if not rows:
         return pd.DataFrame(columns=["MW", "LogP", "NumHDonors", "NumHAcceptors"])
-    return pd.DataFrame(data=baseData, columns=["MW", "LogP", "NumHDonors", "NumHAcceptors"])
+    return pd.DataFrame(data=rows, columns=["MW", "LogP", "NumHDonors", "NumHAcceptors"])
 
 
 def norm_value(input_df, cap_nM=100_000_000):
