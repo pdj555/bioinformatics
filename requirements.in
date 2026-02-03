@@ -1,0 +1,10 @@
+# Direct dependencies from notebooks (Parts 1–5)
+chembl_webresource_client
+pandas
+numpy
+rdkit
+seaborn
+matplotlib
+scipy
+scikit-learn
+lazypredict
